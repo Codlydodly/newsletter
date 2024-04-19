@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  db:
+    container_name: postgres_container
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: newsletter
+    ports:
+      - "5432:5432"
+  creation:
+    image: postgres
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://root:root@db:5432/newsletter
+    command: [ "sqlx", "database", "create" ]
+  migration:
+    image: postgres
+    depends_on:
+      - creation
+    environment:
+      DATABASE_URL: postgres://root:root@db:5432/newsletter
+    command: [ "sqlx", "migrate", "run" ]
+
+
+
